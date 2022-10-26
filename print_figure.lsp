@@ -75,5 +75,5 @@
 )
 
 (setq x -30 cr 30 ch 50 ph 50)
-(print_cylinder x r ch)
+(print_cylinder x cr ch)
 (print_pyramid (+ x ch) (* cr 0.75) ph)
