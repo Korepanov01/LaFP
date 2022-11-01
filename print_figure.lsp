@@ -43,7 +43,7 @@
     (setq current_x (+ current_x circle_step))
   )
   
-  (setq lines_count 15)
+  (setq lines_count (/ 360 desirable_cylinder_lines_angle))
   (setq circle_dots (get_circle_dots x r lines_count))
   (foreach dot circle_dots
     (setq second_dot (list (+ (car dot) h) (cadr dot) (caddr dot)))
