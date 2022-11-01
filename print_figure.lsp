@@ -1,5 +1,9 @@
 (command "_.OSNAP" "_NONE")
 
+(setq circle_dots_count 360)
+(setq desirable_figures_gap 10)
+(setq desirable_cylinder_lines_angle 20)
+
 ;возвращает список точек окружности с равным шагом
 (defun get_circle_dots (x r dots_count)
   (setq p 0)
@@ -15,21 +19,22 @@
   (cdr result)
 )
 
-(defun print_circle (x r)
-  (setq dots_count 100)
-  (setq circle_dots (get_circle_dots x r dots_count))
-  
+(defun print_figure (dots_list)
   (command "_3dpoly")
-  (foreach dot circle_dots
+  (foreach dot dots_list
     (command dot)
   )
   (command "")
 )
 
+(defun print_circle (x r)
+  (setq circle_dots (get_circle_dots x r circle_dots_count))
+  (print_figure circle_dots)
+)
+
 (defun print_cylinder (x r h)
   ;желательное расстояние между кольцами
-  (setq desirable_circle_step 10)
-  (setq circles_count (fix (/ h desirable_circle_step)))
+  (setq circles_count (fix (/ h desirable_figures_gap)))
   (setq circle_step (/ h circles_count))
   
   (setq current_x x)
@@ -48,16 +53,11 @@
 
 (defun print_triangle (x r)
   (setq triangle_dots (get_circle_dots x r 3))
-  (command "_3dpoly")
-  (foreach dot triangle_dots
-    (command dot)
-  )
-  (command "")
+  (print_figure triangle_dots)
 )
 
 (defun print_pyramid (x r h)
-  (setq desirable_triangle_step 10)
-  (setq triangles_count (fix (/ h desirable_triangle_step)))
+  (setq triangles_count (fix (/ h desirable_figures_gap)))
   (setq triangle_step (/ h triangles_count))
   (setq r_step (/ r triangles_count))
   (setq current_x x current_r r)
