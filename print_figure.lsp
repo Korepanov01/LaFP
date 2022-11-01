@@ -35,7 +35,7 @@
 
 (defun print_holey_bottom (x r hr)
   (setq circles_count (fix (/ (- r hr) desirable_bottom_circles_gap)))
-  (setq circle_step (/ h circles_count))
+  (setq circle_step (/ (- r hr) circles_count))
   (setq r_step (/ (- r hr) circles_count))
   
   (setq current_r r)
@@ -54,47 +54,27 @@
   )
 )
 
-(defun print_horn (x r h)
+(defun print_cylinder+ (x rb re h)
   (setq circles_count (fix (/ h desirable_figures_gap)))
   (setq x_step (/ h circles_count))
-  (setq r_step (/ r circles_count))
+  (setq r_step (/ (- re rb) circles_count))
   
   (setq current_x x)
-  (setq current_r r)
+  (setq current_r rb)
   (repeat (1+ circles_count)
     (print_circle current_x current_r)
     (setq current_x (+ current_x x_step))
-    (setq current_r (- current_r r_step))
+    (setq current_r (+ current_r r_step))
   )
   
   (setq lines_count (/ 360 desirable_cylinder_lines_angle))
-  (setq circle_dots (get_circle_dots x r lines_count))
-  (setq second_dot (list (+ x h) 0 0))
-  (foreach dot circle_dots
-    (command "_3dpoly" dot second_dot "")
+  (setq first_circle_dots (get_circle_dots x rb lines_count))
+  (setq last_circle_dots (get_circle_dots (+ x h) re lines_count))
+  (repeat lines_count
+    (command "_3dpoly" (car first_circle_dots) (car last_circle_dots) "")
+    (setq first_circle_dots (cdr first_circle_dots))
+    (setq last_circle_dots (cdr last_circle_dots))
   )
-)
-
-(defun print_cylinder (x r h)
-  ;желательное расстояние между кольцами
-  (setq circles_count (fix (/ h desirable_figures_gap)))
-  (setq circle_step (/ h circles_count))
-  
-  (setq current_x x)
-  (repeat (1+ circles_count)
-    (print_circle current_x r)
-    (setq current_x (+ current_x circle_step))
-  )
-  
-  (setq lines_count (/ 360 desirable_cylinder_lines_angle))
-  (setq circle_dots (get_circle_dots x r lines_count))
-  (foreach dot circle_dots
-    (setq second_dot (list (+ (car dot) h) (cadr dot) (caddr dot)))
-    (command "_3dpoly" dot second_dot "")
-  )
-  
-  (print_holey_bottom x r (/ r 2))
-  (print_horn x (/ r 2) (/ h 2))
 )
 
 (defun print_triangle (x r)
@@ -121,5 +101,7 @@
 )
 
 (setq x -30 cr 30 ch 50 ph 50)
-(print_cylinder x cr ch)
+(print_holey_bottom x cr (/ cr 2))
+(print_cylinder+ x (/ cr 2) 0 (* ch 0.75))
+(print_cylinder+ x cr cr ch)
 (print_pyramid (+ x ch) (* cr 0.75) ph)
