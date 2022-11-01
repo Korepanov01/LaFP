@@ -54,6 +54,27 @@
   )
 )
 
+(defun print_horn (x r h)
+  (setq circles_count (fix (/ h desirable_figures_gap)))
+  (setq x_step (/ h circles_count))
+  (setq r_step (/ r circles_count))
+  
+  (setq current_x x)
+  (setq current_r r)
+  (repeat (1+ circles_count)
+    (print_circle current_x current_r)
+    (setq current_x (+ current_x x_step))
+    (setq current_r (- current_r r_step))
+  )
+  
+  (setq lines_count (/ 360 desirable_cylinder_lines_angle))
+  (setq circle_dots (get_circle_dots x r lines_count))
+  (setq second_dot (list (+ x h) 0 0))
+  (foreach dot circle_dots
+    (command "_3dpoly" dot second_dot "")
+  )
+)
+
 (defun print_cylinder (x r h)
   ;желательное расстояние между кольцами
   (setq circles_count (fix (/ h desirable_figures_gap)))
@@ -73,6 +94,7 @@
   )
   
   (print_holey_bottom x r (/ r 2))
+  (print_horn x (/ r 2) (/ h 2))
 )
 
 (defun print_triangle (x r)
