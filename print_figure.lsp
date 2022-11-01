@@ -1,9 +1,9 @@
 (command "_.OSNAP" "_NONE")
 
 (setq circle_dots_count 360)
-(setq desirable_figures_gap 10)
+(setq desirable_figures_gap 5)
 (setq desirable_bottom_circles_gap 4)
-(setq desirable_cylinder_lines_angle 20)
+(setq desirable_cylinder_lines_angle 15)
 
 ;возвращает список точек окружности с равным шагом
 (defun get_circle_dots (x r dots_count)
@@ -56,8 +56,8 @@
 
 (defun print_cylinder+ (x rb re h)
   (setq circles_count (fix (/ h desirable_figures_gap)))
-  (setq x_step (/ h circles_count))
-  (setq r_step (/ (- re rb) circles_count))
+  (setq x_step (/ h circles_count 1.))
+  (setq r_step (/ (- re rb) circles_count 1.))
   
   (setq current_x x)
   (setq current_r rb)
