@@ -4,6 +4,7 @@
 (setq desirable_figures_gap 5)
 (setq desirable_bottom_circles_gap 4)
 (setq desirable_cylinder_lines_angle 15)
+(setq desirable_triangle_lines_count 8)
 
 ;возвращает список точек окружности с равным шагом
 (defun get_circle_dots (x r dots_count)
@@ -82,6 +83,33 @@
   (print_figure triangle_dots)
 )
 
+
+(defun get_triangle_lines_dots(dot1 dot2 dot3)
+  (print dot1)
+  (print dot2)
+  (print dot3)
+  
+  (setq x (car dot1))
+  (setq result (list nil))
+  (setq dot_pairs (list (list dot1 dot2) (list dot2 dot3) (list dot3 dot1)))
+  
+  (foreach dot_pair dot_pairs
+    (setq d1 (car dot_pair))
+    (setq d2 (cadr dot_pair))
+    (setq y_step (/ (- (cadr d2) (cadr d1)) desirable_triangle_lines_count))
+    (setq z_step (/ (- (caddr d2) (caddr d1)) desirable_triangle_lines_count))
+    
+    (setq current_y (cadr d1))
+    (setq current_z (caddr d1))
+    (repeat desirable_triangle_lines_count
+      (setq current_y (+ current_y y_step))
+      (setq current_z (+ current_z z_step))
+      (setq result (append result (list (list x current_y current_z))))
+    )
+  )
+  (cdr result)
+)
+
 (defun print_pyramid (x r h)
   (setq triangles_count (fix (/ h desirable_figures_gap)))
   (setq triangle_step (/ h triangles_count))
@@ -97,6 +125,11 @@
   (setq second_dot (list (+ x h) 0 0))
   (foreach dot triangle_dots
     (command "_3dpoly" dot second_dot "")
+  )
+  
+  (setq triangle_lines_dots (get_triangle_lines_dots (car triangle_dots) (cadr triangle_dots) (caddr triangle_dots)))
+  (foreach d triangle_lines_dots
+    (command "_3dpoly" d second_dot "")
   )
 )
 
