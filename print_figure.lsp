@@ -140,4 +140,6 @@
   (print_cylinder+ x cr cr ch)
   (print_pyramid (+ x ch) (/ cr 2) ph)
   (print_holey_bottom (+ x ch) cr (/ cr 2) 120)
+  
+  (princ)
 )
