@@ -1,8 +1,8 @@
 (command "_.OSNAP" "_NONE")
 
-(setq circle_dots_count 360)
+(setq circle_dots_count 100)
 (setq desirable_figures_gap 5)
-(setq desirable_bottom_circles_gap 4)
+(setq desirable_bottom_circles_gap 2)
 (setq desirable_cylinder_lines_angle 15)
 (setq desirable_triangle_lines_count 8)
 
@@ -34,7 +34,7 @@
   (print_figure circle_dots)
 )
 
-(defun print_holey_bottom (x r hr)
+(defun print_holey_bottom (x r hr anglee)
   (setq circles_count (fix (/ (- r hr) desirable_bottom_circles_gap)))
   (setq circle_step (/ (- r hr) circles_count))
   (setq r_step (/ (- r hr) circles_count))
@@ -45,7 +45,7 @@
     (setq current_r (- current_r r_step))
   )
   
-  (setq lines_count (/ 360 desirable_cylinder_lines_angle))
+  (setq lines_count (/ 360 anglee))
   (setq outer_ring_lines_dots (get_circle_dots x r lines_count))
   (setq inner_ring_lines_dots (get_circle_dots x hr lines_count))
   (repeat lines_count
@@ -113,7 +113,7 @@
 (defun print_pyramid (x r h)
   (setq triangles_count (fix (/ h desirable_figures_gap)))
   (setq triangle_step (/ h triangles_count))
-  (setq r_step (/ r triangles_count))
+  (setq r_step (/ r triangles_count 1.0))
   (setq current_x x current_r r)
   (repeat triangles_count
     (print_triangle current_x current_r)
@@ -133,8 +133,11 @@
   )
 )
 
-(setq x -30 cr 30 ch 50 ph 50)
-(print_holey_bottom x cr (/ cr 2))
-(print_cylinder+ x (/ cr 2) 0 (* ch 0.75))
-(print_cylinder+ x cr cr ch)
-(print_pyramid (+ x ch) (* cr 0.75) ph)
+(defun c:figure ()
+  (setq x -30 cr 30 ch 50 ph 50)
+  (print_holey_bottom x cr (* cr 0.75) desirable_cylinder_lines_angle)
+  (print_cylinder+ x (* cr 0.75) 0 (* ch 0.5))
+  (print_cylinder+ x cr cr ch)
+  (print_pyramid (+ x ch) (/ cr 2) ph)
+  (print_holey_bottom (+ x ch) cr (/ cr 2) 120)
+)
