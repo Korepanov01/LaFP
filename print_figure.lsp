@@ -6,19 +6,17 @@
 (setq desirable_cylinder_lines_angle 15)
 (setq desirable_triangle_lines_count 8)
 
-;возвращает список точек окружности с равным шагом
 (defun get_circle_dots (x r dots_count)
   (setq p 0)
   (setq step (/ (* 2 pi) dots_count))
   
-  (setq result (list nil))
+  (setq result (list))
   (repeat (1+ dots_count)
     (setq y (* r (sin p)))
     (setq z (* r (cos p)))
-    (setq result (append result (list (list x y z))))
     (setq p (+ p step))
+    (setq result (append result (list (list x y z))))
   )
-  (cdr result)
 )
 
 (defun print_figure (dots_list)
@@ -140,6 +138,5 @@
   (print_cylinder+ x cr cr ch)
   (print_pyramid (+ x ch) (/ cr 2) ph)
   (print_holey_bottom (+ x ch) cr (/ cr 2) 120)
-  
   (princ)
 )
